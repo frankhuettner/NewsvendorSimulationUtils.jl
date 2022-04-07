@@ -29,7 +29,7 @@ end
 Visualize the result.
 """
 function result_figures(sd::SimData; sftsz = 11, lftsz = 13)   
-    if is_running(sd) return null end
+    if is_running(sd) return nothing end
 
     results = create_reference_plays(sd)
 
@@ -171,6 +171,14 @@ which gives the service level  $(days_demand_satisfied) /  $(sd.sim_conf.max_num
 md" ##### 👉 How much do you want to stock for day $(sd.days_played+1)?"
 	end
 end 
+
+function update_result_figures_panel(sd::SimData)
+	if sd.days_played == sd.sim_conf.max_num_days
+		result_figures(sd) 
+	else
+		md""
+	end	
+end
 
 
 function update_demand_realization_panel(sd::SimData)
