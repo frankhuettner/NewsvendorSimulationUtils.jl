@@ -172,13 +172,6 @@ md" ##### 👉 How much do you want to stock for day $(sd.days_played+1)?"
 	end
 end 
 
-function update_result_figures_panel(sd::SimData)
-	if sd.days_played == sd.sim_conf.max_num_days
-		result_figures(sd) 
-	else
-		md""
-	end	
-end
 
 
 function update_demand_realization_panel(sd::SimData)
