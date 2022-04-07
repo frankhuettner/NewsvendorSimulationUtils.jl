@@ -1,9 +1,18 @@
 sd = SimData()
 @test_nowarn NewsvendorSimulationUtils.update_sim_data!(sd)
 
+@test_nowarn NewsvendorSimulationUtils.update_plot_panel_1(sd::SimData)
+@test_nowarn NewsvendorSimulationUtils.update_plot_panel_2(sd::SimData)
+
+
+
 append!(sd.qs, [0, 111, 155, 115])
 NewsvendorSimulationUtils.update_sim_data!(sd)
 
+
+
+@test_nowarn NewsvendorSimulationUtils.update_plot_panel_1(sd::SimData)
+@test_nowarn NewsvendorSimulationUtils.update_plot_panel_2(sd::SimData)
 @test_nowarn NewsvendorSimulationUtils.update_result_figures_panel(sd::SimData)
 
 @test_nowarn NewsvendorSimulationUtils.history_table(sd::SimData)
@@ -16,8 +25,17 @@ NewsvendorSimulationUtils.update_sim_data!(sd)
 @test_nowarn NewsvendorSimulationUtils.update_demand_realization_panel(sd::SimData)
 @test_nowarn NewsvendorSimulationUtils.update_history_table(sd::SimData)
 
+
+
 append!(sd.qs, round.(Int, rand(sd.nvm.demand, 26)))
 @test_nowarn NewsvendorSimulationUtils.update_sim_data!(sd)
+
+
+
+
+
+@test_nowarn NewsvendorSimulationUtils.update_plot_panel_1(sd::SimData)
+@test_nowarn NewsvendorSimulationUtils.update_plot_panel_2(sd::SimData)
 @test_nowarn NewsvendorSimulationUtils.result_figures(sd::SimData)
 
 @test_nowarn NewsvendorSimulationUtils.update_result_figures_panel(sd::SimData)
