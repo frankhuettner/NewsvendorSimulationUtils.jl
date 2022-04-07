@@ -135,3 +135,120 @@ function result_figures(sd::SimData; sftsz = 11, lftsz = 13)
     plt = plot(description_plt, profit_plt, sale_plt, left_over_plt, lost_sale_plt,
         exp_profit_plt, exp_sales_plt, exp_left_over_plt, exp_lost_sale_plt, ylabelfontsize=13,	layout = grid(9, 1, heights=heights), size=(820, 2000), bottom_margin=3Plots.mm, top_margin=5Plots.mm, right_margin=-8Plots.mm, left_margin=12Plots.mm)
 end
+
+function update_submission_and_result_panel(sd::SimData)
+	
+	if sd.days_played > 0 && sd.days_played < sd.sim_conf.max_num_days
+md" ##### 👉 How much do you want to stock for day $(sd.days_played+1)?"
+	elseif sd.days_played == sd.sim_conf.max_num_days 
+			
+days_out_of_stock = count(sd.qs .< sd.demands)
+days_demand_satisfied = sd.sim_conf.max_num_days - days_out_of_stock
+service_level = my_round(100 * days_demand_satisfied/sd.sim_conf.max_num_days)
+			
+md"""
+!!! tip "You came to the end of the simulation." 
+	👍 Great job!
+	
+	Scroll down to find a comparison of your result with alternative strategies.
+
+		
+
+		
+##### Your average order was:  $(my_round(sd.avg_q, sigdigits=4)) units.
+
+The **observed average demand** was **$(my_round(sd.avg_demand, sigdigits=4))**, whereas $(my_round(mean(sd.nvm.demand), sigdigits=4)) was expected. (Did you have an extreme sample of demands? To give you an idea as to how (un)usual your random draws were: Out of 100 students runing this simulation, 
+$(round(Int,(100*likelihood_of_observed_mean(sd, sd.avg_demand) )))  observe an average in their simulation that is even further from the mean than yours.)
+			
+
+##### ☝️ Your service level was $(service_level)%. 
+
+On $(days_out_of_stock) out of $(sd.sim_conf.max_num_days), you ran out of stock; **on $(days_demand_satisfied) out of $(sd.sim_conf.max_num_days), you satisfied all customers**, 
+which gives the service level  $(days_demand_satisfied) /  $(sd.sim_conf.max_num_days) = $(my_round(service_level)) %. 
+ 
+	"""
+	else
+md" ##### 👉 How much do you want to stock for day $(sd.days_played+1)?"
+	end
+end 
+
+
+function update_demand_realization_panel(sd::SimData)
+
+	if sd.days_played > 0 && sd.days_played <= sd.sim_conf.max_num_days
+md"""
+**Total profit: \$ $(my_round(sd.total_profit, sigdigits=4))** ``~~`` 
+
+**Average profit: \$ $(my_round(sd.avg_profit, sigdigits=4))**
+		
+**Result for day $(sd.days_played):**
+		
+Day  	| Stocked 	| Demand 	| Sold 	| Left over 	| Lost sales 	| Profit 	|
+|---	|---	|---	|---	|---	|---	|---	|
+|$(sd.days_played)  | $(sd.qs[end]) 	| $(sd.demands[sd.days_played]) 	| $(sd.sales[end]) 	| $(sd.left_overs[end]) 	| $(sd.lost_sales[end]) 	| \$ $(sd.profits[end]) 	|	
+"""
+	else	
+md""
+	end
+end
+
+function data_table(table)
+	d = Dict(
+        "headers" => [Dict("text" => string(name), "value" => string(name)) for name in Tables.columnnames(table)],
+        "data" => [Dict(string(name) => row[name] for name in Tables.columnnames(table)) for row in Tables.rows(table)]
+    )
+	djson = JSON3.write(d)
+	
+	return HTML("""
+		<link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+
+
+	  <div id="app">
+		<v-app>
+		  <v-data-table
+		  :headers="headers"
+		  :items="data"
+		></v-data-table>
+		</v-app>
+	  </div>
+
+	  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+	  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+	
+	<script>
+		new Vue({
+		  el: '#app',
+		  vuetify: new Vuetify(),
+		  data () {
+				return $djson
+			}
+		})
+	</script>
+	<style>
+		.v-application--wrap {
+			min-height: 10vh;
+		}
+		.v-data-footer__select {
+			display: none;
+		}
+	</style>
+	""")
+end
+
+
+function update_history_table(sd::SimData)
+	if sd.days_played > 0
+		T = Tables.table(hcat( 	1:sd.days_played,
+								sd.qs, 
+								sd.demands[1:sd.days_played],
+								sd.sales,
+								sd.left_overs,
+								sd.lost_sales,
+								sd.profits); 
+			
+		header = ["Day","Stocked","Demand","Sold","Left over","Lost sales","Profit"])
+		data_table(T)
+	else
+		return md""
+	end
+end; md""
