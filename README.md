@@ -1,5 +1,5 @@
 [![CI](https://github.com/frankhuettner/NewsvendorSimulationUtils.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/frankhuettner/NewsvendorSimulationUtils.jl/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/FrankHuettner/NewsvendorSimulationUtils.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/FrankHuettner/NewsvendorSimulationUtils.jl)
+[![codecov](https://codecov.io/gh/frankhuettner/NewsvendorSimulationUtils.jl/branch/master/graph/badge.svg?token=WI9rjXnMWV)](https://codecov.io/gh/frankhuettner/NewsvendorSimulationUtils.jl)
 
 
 # NewsvendorSimulationUtils.jl
