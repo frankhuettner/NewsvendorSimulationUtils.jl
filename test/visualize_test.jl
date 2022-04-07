@@ -40,3 +40,7 @@ cheers4 = NVModel(cost=10, price=42, demand=DiscreteNonParametric([0,1,2],[.3,.5
 @test_nowarn NewsvendorSimulationUtils.describe_cost(cheers4)
 @test_nowarn NewsvendorSimulationUtils.visualize_cost(cheers4)
 @test_nowarn NewsvendorSimulationUtils.describe(cheers4)
+
+
+@test_nowarn NewsvendorSimulationUtils.update_plot_panel_1(sd::SimData)
+@test_nowarn NewsvendorSimulationUtils.update_plot_panel_2(sd::SimData)
